@@ -14,8 +14,10 @@
   "dependencies": {
     "@prisma/client": "^5.18.0",
     "ajv": "^6.12.6",
+    "argon2": "^0.40.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "prisma": "^5.18.0"
   },
