@@ -2,7 +2,7 @@
   "name": "nodepractice",
   "version": "1.0.0",
   "description": "A API to practice and perfect my node.js development",
-  "main": "index.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

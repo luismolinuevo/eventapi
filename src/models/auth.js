@@ -15,6 +15,20 @@ async function signUp(email, password) {
   }
 }
 
+async function getUserByEmail(email) {
+  try {
+    const get_user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    return get_user;
+  } catch (error) {
+    console.log("Error with the login model ", error);
+  }
+}
+
 async function getUser(user_id) {
   try {
     const get_user = await prisma.user.findFirst({
@@ -29,4 +43,4 @@ async function getUser(user_id) {
   }
 }
 
-export { signUp, getUser };
+export { signUp, getUser, getUserByEmail };
