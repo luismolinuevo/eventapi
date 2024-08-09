@@ -2,7 +2,7 @@ import Ajv from "ajv";
 
 const ajv = new Ajv();
 
-const signUpSchema = {
+const authSchema = {
   type: "object",
   properties: {
     email: { type: "string", format: "email" },
@@ -12,4 +12,4 @@ const signUpSchema = {
   additionalProperties: false,
 };
 
-export const validateSignUp = ajv.compile(signUpSchema);
+export const validateAuthData = ajv.compile(authSchema);

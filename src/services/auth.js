@@ -1,4 +1,3 @@
-import { argon2d } from "argon2";
 import { getUserByEmail } from "../models/auth.js";
 import {
   generateAccessToken,

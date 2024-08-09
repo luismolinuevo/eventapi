@@ -1,6 +1,6 @@
 import express from "express";
 import morgan from "morgan";
-import { apiRouter } from "./routes/index.js";
+import apiRouter from "./routes/index.js";
 
 //This is your server
 const app = express();

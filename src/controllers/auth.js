@@ -1,18 +1,20 @@
 import { signUp, getUser } from "../models/auth.js";
-import { validateSignUp } from "../schemas/auth.js";
+import { validateAuthData } from "../schemas/auth.js";
+import { loginService } from "../services/auth.js";
+import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
 
 async function signUpController(req, res) {
   try {
     const { email, password } = req.body;
 
-    const valid = validateSignUp(req.body);
+    const valid = validateAuthData(req.body);
 
     if (!valid) {
       // If validation fails, return a 400 Bad Request with the validation errors
       return res.status(400).json({
         success: false,
         message: "Invalid input data",
-        errors: validateSignUp.errors, // Ajv provides a list of errors
+        errors: validateAuthData.errors, // Ajv provides a list of errors
       });
     }
 
@@ -65,4 +67,41 @@ async function getUserController(req, res) {
   }
 }
 
-export { signUpController, getUserController };
+async function loginController(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    const valid = validateAuthData(req.body);
+
+    if (!valid) {
+      // If validation fails, return a 400 Bad Request with the validation errors
+      return res.status(400).json({
+        success: false,
+        message: "Invalid input data",
+        errors: validateAuthData.errors, // Ajv provides a list of errors
+      });
+    }
+
+    const tokens = await loginService(email, password);
+    res.cookie(ACCESS_TOKEN_NAME, tokens.access_token, {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+    });
+
+    res.cookie(REFRESH_TOKEN_NAME, tokens.refresh_token, {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "User login success",
+    });
+  } catch (error) {
+    return;
+  }
+}
+
+export { signUpController, getUserController, loginController };

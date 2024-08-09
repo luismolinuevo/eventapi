@@ -3,6 +3,6 @@ import authRoutes from "./auth.js";
 
 const apiRouter = Router();
 
-apiRouter.use(authRoutes);
+apiRouter.use("/auth", authRoutes);
 
-export { apiRouter };
+export default apiRouter;

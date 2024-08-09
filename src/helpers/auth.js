@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import argon2 from 'argon2';
-import prisma from '../config/prismaClient';
+import prisma from '../config/prismaClient.js';
 
 // Hash user password
 export const hashPassword = async (password) => {
