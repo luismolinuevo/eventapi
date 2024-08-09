@@ -28,3 +28,8 @@ Ensure you have the following installed:
    ```bash
    git clone https://github.com/yourusername/events-api.git
    cd events-api
+
+2. Clone the repository:
+Make sure you are in the root directory
+   ```bash
+   npm install
