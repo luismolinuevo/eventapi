@@ -1,15 +1,20 @@
-import { signUp, getUser } from "../services/auth.js";
+import { signUp, getUser } from "../models/auth.js";
+import { validateSignUp } from "../schemas/auth.js";
 
 async function signUpController(req, res) {
   try {
     const { email, password } = req.body;
-    if (!email && !password) {
-      return res.status(404).json({
+
+    const valid = validateSignUp(req.body);
+
+    if (!valid) {
+      // If validation fails, return a 400 Bad Request with the validation errors
+      return res.status(400).json({
         success: false,
-        message: "No email or password",
+        message: "Invalid input data",
+        errors: validateSignUp.errors, // Ajv provides a list of errors
       });
     }
-    //Make data is valid and sanitized. Didnt do it yet
 
     const sign_up = await signUp(email, password);
 
