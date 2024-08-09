@@ -21,14 +21,14 @@ export const generateAccessToken = (user) => {
 export const generateRefreshToken = async (user) => {
     const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, { expiresIn: process.env.JWT_REFRESH_EXPIRATION });
     
-    await prisma.token.create({
-      data: {
-        userId: user.id,
-        token: refreshToken,
-        type: 'refresh',
-        expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
-      },
-    });
+    // await prisma.token.create({
+    //   data: {
+    //     userId: user.id,
+    //     token: refreshToken,
+    //     type: 'refresh',
+    //     expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
+    //   },
+    // });
   
     return refreshToken;
   };
@@ -39,13 +39,13 @@ export const generateRefreshToken = async (user) => {
       let secret = type === 'access' ? process.env.JWT_ACCESS_SECRET : process.env.JWT_REFRESH_SECRET;
       const decoded = jwt.verify(token, secret);
   
-      const blacklistedToken = await prisma.token.findFirst({
-        where: { token, type },
-      });
+    //   const blacklistedToken = await prisma.token.findFirst({
+    //     where: { token, type },
+    //   });
   
-      if (blacklistedToken) {
-        throw new Error('Token has been blacklisted');
-      }
+    //   if (blacklistedToken) {
+    //     throw new Error('Token has been blacklisted');
+    //   }
   
       return decoded;
     } catch (err) {

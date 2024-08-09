@@ -16,7 +16,7 @@ async function loginService(email, password) {
     }
 
     const access_token = generateAccessToken(user);
-    const refresh_token = generateRefreshToken(user);
+    const refresh_token = await generateRefreshToken(user);
 
     return { access_token, refresh_token };
   } catch (error) {

@@ -1,6 +1,7 @@
 import { signUp, getUser } from "../models/auth.js";
 import { validateAuthData } from "../schemas/auth.js";
 import { loginService } from "../services/auth.js";
+import { hashPassword } from "../helpers/auth.js";
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
 
 async function signUpController(req, res) {
@@ -18,7 +19,8 @@ async function signUpController(req, res) {
       });
     }
 
-    const sign_up = await signUp(email, password);
+    const hashedPassword = await hashPassword(password);
+    const sign_up = await signUp(email, hashedPassword);
 
     return res.status(201).json({
       success: true,
@@ -83,6 +85,7 @@ async function loginController(req, res) {
     }
 
     const tokens = await loginService(email, password);
+    console.log(tokens)
     res.cookie(ACCESS_TOKEN_NAME, tokens.access_token, {
       httpOnly: true,
       secure: true,
