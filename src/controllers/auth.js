@@ -17,7 +17,7 @@ async function signUpController(req, res, next) {
     const valid = validateAuthData(req.body);
 
     if (!valid) {
-      next(new ValidationError("Password or Email invalid"));
+      return next(new ValidationError("Password or Email invalid"));
     }
 
     const hashedPassword = await hashPassword(password);
@@ -28,7 +28,7 @@ async function signUpController(req, res, next) {
       message: "Created user",
     });
   } catch (error) {
-    next(new ProgrammingError());
+    return next(new ProgrammingError());
   }
 }
 
@@ -37,13 +37,13 @@ async function getUserController(req, res, next) {
     const { user_id } = req.params;
     //Check if user logged in. Middleware or helper function
     if (!user_id) {
-      next(new ValidationError("User invalid"));
+      return next(new ValidationError("User invalid"));
     }
 
     const get_user = await getUser(user_id);
 
     if (!get_user) {
-      next(new NotFoundError("Password or Email invalid"));
+      return next(new NotFoundError("Password or Email invalid"));
     }
 
     return res.status(200).json({
@@ -52,7 +52,7 @@ async function getUserController(req, res, next) {
       get_user,
     });
   } catch (error) {
-    next(new ProgrammingError());
+    return next(new ProgrammingError());
   }
 }
 
@@ -63,13 +63,13 @@ async function loginController(req, res, next) {
     const valid = validateAuthData(req.body);
 
     if (!valid) {
-      next(new ValidationError("Password or Email invalid"));
+      return next(new ValidationError("Password or Email invalid"));
     }
 
     const tokens = await loginService(email, password);
 
     if (!tokens) {
-      next(new AuthError("Password or Email invalid"));
+      return next(new AuthError("Password or Email invalid"));
     }
 
     res.cookie(ACCESS_TOKEN_NAME, tokens.access_token, {
@@ -89,7 +89,7 @@ async function loginController(req, res, next) {
       message: "User login success",
     });
   } catch (error) {
-    next(new ProgrammingError());
+    return next(new ProgrammingError());
   }
 }
 
