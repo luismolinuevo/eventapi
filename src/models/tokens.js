@@ -19,20 +19,28 @@ async function isTokenBlacklisted(token, type = "refresh") {
 }
 
 async function saveToken(user_id, token, type, expiration) {
-  await prisma.token.create({
-    data: {
-      user_id,
-      token,
-      type,
-      expiry: new Date(Date.now() + expiration),
-    },
-  });
+  try {
+    await prisma.token.create({
+      data: {
+        user_id,
+        token,
+        type,
+        expiry: new Date(Date.now() + expiration),
+      },
+    });
+  } catch (error) {
+    throw new DatabaseError("Failed to save token");
+  }
 }
 
 async function invalidateToken(token, type) {
-  await prisma.blacklistedToken.create({
-    data: { token: token, type }, // nullify token
-  });
+  try {
+    await prisma.blacklistedToken.create({
+      data: { token: token, type },
+    });
+  } catch (error) {
+    throw new DatabaseError("Failed to invalidate token");
+  }
 }
 
 export { isTokenBlacklisted, saveToken, invalidateToken };
