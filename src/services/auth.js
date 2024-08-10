@@ -1,4 +1,4 @@
-import { getUserByEmail } from "../models/auth.js";
+import { getUserByEmail } from "../models/user.js";
 import {
   generateAccessToken,
   generateRefreshToken,

@@ -1,4 +1,4 @@
-import { signUp, getUserById } from "../models/auth.js";
+import { signUp } from "../models/auth.js";
 import { validateAuthData } from "../schemas/auth.js";
 import { loginService, refreshTokens } from "../services/auth.js";
 import { hashPassword } from "../helpers/auth.js";
@@ -6,7 +6,6 @@ import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
 import {
   ProgrammingError,
   ValidationError,
-  NotFoundError,
   AuthError,
 } from "../utils/exceptions.js";
 
@@ -26,30 +25,6 @@ async function signUpController(req, res, next) {
     return res.status(201).json({
       success: true,
       message: "Created user",
-    });
-  } catch (error) {
-    return next(new ProgrammingError());
-  }
-}
-
-async function getUserController(req, res, next) {
-  try {
-    const { user_id } = req.params;
-    //Check if user logged in. Middleware or helper function
-    if (!user_id) {
-      return next(new ValidationError("User invalid"));
-    }
-
-    const get_user = await getUserById(user_id);
-
-    if (!get_user) {
-      return next(new NotFoundError("User invalid"));
-    }
-
-    return res.status(200).json({
-      success: true,
-      message: "Found user with that id",
-      get_user,
     });
   } catch (error) {
     return next(new ProgrammingError());

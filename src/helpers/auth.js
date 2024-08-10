@@ -37,35 +37,11 @@ export const generateRefreshToken = async (user) => {
         type: "refresh",
         expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
       },
-      
     });
 
     return refreshToken;
   } catch (error) {
     console.log(error);
     throw new AuthError("Error creating refresh token");
-  }
-};
-
-// Verify token and handle blacklist
-export const verifyToken = async (token, type = "access") => {
-  try {
-    let secret =
-      type === "access"
-        ? process.env.JWT_ACCESS_SECRET
-        : process.env.JWT_REFRESH_SECRET;
-    const decoded = jwt.verify(token, secret);
-
-    const blacklistedToken = await prisma.token.findFirst({
-      where: { token, type },
-    });
-
-    if (blacklistedToken) {
-      throw new Error("Token has been blacklisted");
-    }
-
-    return decoded;
-  } catch (err) {
-    throw new Error("Invalid token");
   }
 };

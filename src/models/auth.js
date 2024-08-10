@@ -16,40 +16,4 @@ async function signUp(email, password) {
   }
 }
 
-async function getUserByEmail(email) {
-  try {
-    const get_user = await prisma.user.findFirst({
-      where: {
-        email: email,
-      },
-    });
-
-    return get_user;
-  } catch (error) {
-    throw new DatabaseError("Error getting user by email");
-  }
-}
-
-async function getUserById(user_id) {
-  try {
-    const get_user = await prisma.user.findFirst({
-      where: {
-        user_id: parseInt(user_id),
-      },
-    });
-
-    return get_user;
-  } catch (error) {
-    throw new DatabaseError("Error getting user by id");
-  }
-}
-
-async function isTokenBlacklisted(token) {
-  const blacklistedToken = await prisma.blacklistedToken.findUnique({
-    where: { token },
-  });
-
-  return !!blacklistedToken;
-}
-
-export { signUp, getUserById, getUserByEmail, isTokenBlacklisted };
+export { signUp };
