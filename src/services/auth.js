@@ -33,43 +33,43 @@ async function loginService(email, password) {
 }
 
 async function refreshTokens(refreshToken) {
-    try {
-  // Validate the refresh token
-  console.log('entered')
-  const blacklisted = await isTokenBlacklisted(refreshToken, "refresh");
+  try {
+    // Validate the refresh token
+    console.log("entered");
+    const blacklisted = await isTokenBlacklisted(refreshToken, "refresh");
 
-  console.log(blacklisted)
-  if (blacklisted) {
-    throw new AuthError("Refresh token is invalid or expired");
-  }
+    console.log(blacklisted);
+    if (blacklisted) {
+      throw new AuthError("Refresh token is invalid or expired");
+    }
 
-  // Verify and decode the refresh token
-  const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    // Verify and decode the refresh token
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
 
-  console.log(decoded)
-  // Find user associated with the refresh token
-  const user = await prisma.user.findUnique({
-    where: { user_id: decoded.id },
-  });
+    console.log(decoded);
+    // Find user associated with the refresh token
+    const user = await prisma.user.findUnique({
+      where: { user_id: decoded.id },
+    });
 
-  console.log(user)
+    console.log(user);
 
-  if (!user) {
-    throw new Error("User not found");
-  }
+    if (!user) {
+      throw new Error("User not found");
+    }
 
-//   Invalidate the old refresh token
-  await invalidateToken(refreshToken);
+    //   Invalidate the old refresh token
+    await invalidateToken(refreshToken, "refresh");
 
-  // Generate new access token and refresh token
-  const newAccessToken = generateAccessToken(user);
-  const newRefreshToken = await generateRefreshToken(user);
+    // Generate new access token and refresh token
+    const newAccessToken = await generateAccessToken(user);
+    const newRefreshToken = await generateRefreshToken(user);
 
-  return { newAccessToken, newRefreshToken, refreshToken };
-} catch(error) {
-    console.log(error)
+    return { newAccessToken, newRefreshToken, refreshToken };
+  } catch (error) {
+    console.log(error);
     throw new ProgrammingError("Error logging user in");
-}
+  }
 }
 
 export { loginService, refreshTokens };

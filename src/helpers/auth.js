@@ -69,11 +69,3 @@ export const verifyToken = async (token, type = "access") => {
     throw new Error("Invalid token");
   }
 };
-
-// Invalidate refresh token (blacklist)
-export const invalidateToken = async (token) => {
-  await prisma.token.update({
-    where: { token },
-    data: { token: null }, // nullify token
-  });
-};

@@ -3,10 +3,10 @@ import { DatabaseError } from "../utils/exceptions.js";
 
 async function isTokenBlacklisted(token, type = "refresh") {
   try {
-    const blacklistedToken = await prisma.token.findFirst({
+    const blacklistedToken = await prisma.blacklistedToken.findFirst({
       where: { token, type },
     });
-    
+
     if (blacklistedToken) {
       return true;
     }
@@ -29,10 +29,9 @@ async function saveToken(user_id, token, type, expiration) {
   });
 }
 
-async function invalidateToken(token) {
-  await prisma.token.update({
-    where: { token },
-    data: { token: null }, // nullify token
+async function invalidateToken(token, type) {
+  await prisma.blacklistedToken.create({
+    data: { token: token, type }, // nullify token
   });
 }
 
