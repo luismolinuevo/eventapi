@@ -5,13 +5,6 @@ import {
   verifyPassword,
 } from "../helpers/auth.js";
 import { AuthError, ProgrammingError } from "../utils/exceptions.js";
-import {
-  isTokenBlacklisted,
-  saveToken,
-  invalidateToken,
-} from "../models/tokens.js";
-import jwt from "jsonwebtoken";
-import prisma from "../config/prismaClient.js";
 
 async function loginService(email, password) {
   try {
@@ -32,39 +25,4 @@ async function loginService(email, password) {
   }
 }
 
-async function refreshTokens(refreshToken) {
-  try {
-    // Validate the refresh token
-    const blacklisted = await isTokenBlacklisted(refreshToken, "refresh");
-
-    if (blacklisted) {
-      throw new AuthError("Refresh token is invalid or expired");
-    }
-
-    // Verify and decode the refresh token
-    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-
-    // Find user associated with the refresh token
-    const user = await prisma.user.findUnique({
-      where: { user_id: decoded.id },
-    });
-
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    //   Invalidate the old refresh token
-    await invalidateToken(refreshToken, "refresh");
-
-    // Generate new access token and refresh token
-    const newAccessToken = await generateAccessToken(user);
-    const newRefreshToken = await generateRefreshToken(user);
-
-    return { newAccessToken, newRefreshToken, refreshToken };
-  } catch (error) {
-    console.log(error);
-    throw new ProgrammingError("Error logging user in");
-  }
-}
-
-export { loginService, refreshTokens };
+export { loginService };

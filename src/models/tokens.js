@@ -43,4 +43,17 @@ async function invalidateToken(token, type) {
   }
 }
 
-export { isTokenBlacklisted, saveToken, invalidateToken };
+async function checkUserToken(user_id) {
+  try {
+    // Find user associated with the refresh token
+    const user = await prisma.user.findUnique({
+      where: { user_id: user_id },
+    });
+
+    return user;
+  } catch (error) {
+    throw new DatabaseError("Failed to find user with that token");
+  }
+}
+
+export { isTokenBlacklisted, saveToken, invalidateToken, checkUserToken };
