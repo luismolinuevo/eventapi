@@ -3,7 +3,7 @@ class AppError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.status = `${statusCode}`.startsWith("4") ? "fail" : "error";
-    this.isOperational = true;
+    this.isOperational = true; // This flag distinguishes operational errors
     Error.captureStackTrace(this, this.constructor);
   }
 }
@@ -26,4 +26,21 @@ class DatabaseError extends AppError {
   }
 }
 
-export { AppError, ValidationError, NotFoundError, DatabaseError };
+// Example of a Programming Error (not operational)
+class ProgrammingError extends Error {
+  constructor(message) {
+    super(message || "Programming Error");
+    this.statusCode = 500;
+    this.status = "error";
+    this.isOperational = false;
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+export {
+  AppError,
+  ValidationError,
+  NotFoundError,
+  DatabaseError,
+  ProgrammingError,
+};
