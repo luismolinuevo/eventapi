@@ -53,7 +53,7 @@ export const generateRefreshToken = async (user) => {
   try {
     const refreshToken = signToken(user, "refresh");
 
-    const expiryTime = new Date(Date.now() + ms(JWT_REFRESH_EXPIRATION));
+    const expiryTime = new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION));
 
     await saveToken(user.user_id, refreshToken, "refresh", expiryTime);
 

@@ -15,10 +15,10 @@ async function loginService(email, password) {
     if (!compare_password || !user) {
       throw new AuthError("Invalid email or password");
     }
-    console.log("hey")
+    
     const access_token = await generateAccessToken(user);
     const refresh_token = await generateRefreshToken(user);
-    console.log(access_token, refresh_token)
+    
     return { access_token, refresh_token };
   } catch (error) {
     throw new ProgrammingError("Error logging user in");
