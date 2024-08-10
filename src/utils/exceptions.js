@@ -14,6 +14,12 @@ class ValidationError extends AppError {
   }
 }
 
+class AuthError extends AppError {
+  constructor(message) {
+    super(message || "Auth Error", 401);
+  }
+}
+
 class NotFoundError extends AppError {
   constructor(message) {
     super(message || "Resource Not Found", 404);
@@ -40,6 +46,7 @@ class ProgrammingError extends Error {
 export {
   AppError,
   ValidationError,
+  AuthError,
   NotFoundError,
   DatabaseError,
   ProgrammingError,

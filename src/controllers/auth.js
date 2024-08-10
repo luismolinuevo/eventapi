@@ -3,20 +3,21 @@ import { validateAuthData } from "../schemas/auth.js";
 import { loginService } from "../services/auth.js";
 import { hashPassword } from "../helpers/auth.js";
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
+import {
+  ProgrammingError,
+  ValidationError,
+  NotFoundError,
+  AuthError,
+} from "../utils/exceptions.js";
 
-async function signUpController(req, res) {
+async function signUpController(req, res, next) {
   try {
     const { email, password } = req.body;
 
     const valid = validateAuthData(req.body);
 
     if (!valid) {
-      // If validation fails, return a 400 Bad Request with the validation errors
-      return res.status(400).json({
-        success: false,
-        message: "Invalid input data",
-        errors: validateAuthData.errors, // Ajv provides a list of errors
-      });
+      next(new ValidationError("Password or Email invalid"));
     }
 
     const hashedPassword = await hashPassword(password);
@@ -27,32 +28,22 @@ async function signUpController(req, res) {
       message: "Created user",
     });
   } catch (error) {
-    console.log("Error with signup controller ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error with signing up" + error,
-    });
+    next(new ProgrammingError());
   }
 }
 
-async function getUserController(req, res) {
+async function getUserController(req, res, next) {
   try {
     const { user_id } = req.params;
     //Check if user logged in. Middleware or helper function
     if (!user_id) {
-      return res.status(404).json({
-        success: false,
-        message: "No valid user_id",
-      });
+      next(new ValidationError("User invalid"));
     }
 
     const get_user = await getUser(user_id);
 
     if (!get_user) {
-      return res.status(404).json({
-        success: false,
-        message: "Cannot find user with that id",
-      });
+      next(new NotFoundError("Password or Email invalid"));
     }
 
     return res.status(200).json({
@@ -61,31 +52,26 @@ async function getUserController(req, res) {
       get_user,
     });
   } catch (error) {
-    console.log("Error with user controller ", error);
-    return res.status(500).json({
-      success: false,
-      message: "Server error with getting user " + error,
-    });
+    next(new ProgrammingError());
   }
 }
 
-async function loginController(req, res) {
+async function loginController(req, res, next) {
   try {
     const { email, password } = req.body;
 
     const valid = validateAuthData(req.body);
 
     if (!valid) {
-      // If validation fails, return a 400 Bad Request with the validation errors
-      return res.status(400).json({
-        success: false,
-        message: "Invalid input data",
-        errors: validateAuthData.errors, // Ajv provides a list of errors
-      });
+      next(new ValidationError("Password or Email invalid"));
     }
 
     const tokens = await loginService(email, password);
-    console.log(tokens)
+
+    if (!tokens) {
+      next(new AuthError("Password or Email invalid"));
+    }
+
     res.cookie(ACCESS_TOKEN_NAME, tokens.access_token, {
       httpOnly: true,
       secure: true,
@@ -103,7 +89,7 @@ async function loginController(req, res) {
       message: "User login success",
     });
   } catch (error) {
-    return;
+    next(new ProgrammingError());
   }
 }
 
