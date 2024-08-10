@@ -1,6 +1,7 @@
 import { signUp } from "../models/auth.js";
 import { validateAuthData } from "../schemas/auth.js";
-import { loginService, refreshTokens } from "../services/auth.js";
+import { loginService } from "../services/auth.js";
+import { refreshTokens } from "../services/tokens.js";
 import { hashPassword } from "../helpers/auth.js";
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
 import {
@@ -46,7 +47,7 @@ async function loginController(req, res, next) {
     if (!tokens) {
       return next(new AuthError("Password or Email invalid"));
     }
-    console.log(tokens)
+    console.log(tokens);
     res.cookie(ACCESS_TOKEN_NAME, tokens.access_token, {
       httpOnly: true,
       secure: true,
@@ -58,20 +59,20 @@ async function loginController(req, res, next) {
       secure: true,
       path: "/",
     });
-    
+
     res.status(200).json({
       success: true,
       message: "User login success",
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return next(new ProgrammingError());
   }
 }
 
 async function refreshTokenController(req, res, next) {
   try {
-    console.log(req.cookies)
+    console.log(req.cookies);
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
@@ -107,9 +108,4 @@ async function refreshTokenController(req, res, next) {
   }
 }
 
-export {
-  signUpController,
-  getUserController,
-  loginController,
-  refreshTokenController,
-};
+export { signUpController, loginController, refreshTokenController };

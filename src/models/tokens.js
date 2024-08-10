@@ -25,7 +25,7 @@ async function saveToken(user_id, token, type, expiration) {
         user_id,
         token,
         type,
-        expiry: new Date(Date.now() + expiration),
+        expiry: expiration,
       },
     });
   } catch (error) {

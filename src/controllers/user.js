@@ -4,7 +4,7 @@ import { NotFoundError } from "../utils/exceptions.js";
 async function getUserController(req, res, next) {
   try {
     const { user_id } = req.params;
-    
+
     if (!user_id) {
       return next(new ValidationError("User invalid"));
     }

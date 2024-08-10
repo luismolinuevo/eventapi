@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import prisma from "../config/prismaClient.js";
-import { AuthError } from "../utils/exceptions.js";
+import { AuthError, ProgrammingError } from "../utils/exceptions.js";
 import ms from "ms";
 import { saveToken } from "../models/tokens.js";
 import {
@@ -22,19 +22,25 @@ export const verifyPassword = async (hashedPassword, password) => {
 };
 
 export const signToken = (user, type) => {
-  let token;
+  try {
+    let token;
+    const payload = user.user_id;
 
-  if (type == "refresh") {
-    token = jwt.sign({ id: user.user_id }, JWT_REFRESH_SECRET, {
-      expiresIn: JWT_REFRESH_EXPIRATION,
-    });
-  } else {
-    token = jwt.sign({ id: user.user_id }, JWT_ACCESS_SECRET, {
-      expiresIn: JWT_ACCESS_EXPIRATION,
-    });
+    if (type == "refresh") {
+      token = jwt.sign({ id: payload }, JWT_REFRESH_SECRET, {
+        expiresIn: process.env.JWT_REFRESH_EXPIRATION,
+      });
+    } else {
+      token = jwt.sign({ id: payload }, JWT_ACCESS_SECRET, {
+        expiresIn: process.env.JWT_ACCESS_EXPIRATION,
+      });
+    }
+
+    return token;
+  } catch (error) {
+    console.log(error);
+    throw new ProgrammingError("Error signing token");
   }
-
-  return token;
 };
 
 // Generate access token
@@ -47,12 +53,9 @@ export const generateRefreshToken = async (user) => {
   try {
     const refreshToken = signToken(user, "refresh");
 
-    await saveToken(
-      user.user_id,
-      refreshToken,
-      "refresh",
-      JWT_REFRESH_EXPIRATION
-    );
+    const expiryTime = new Date(Date.now() + ms(JWT_REFRESH_EXPIRATION));
+
+    await saveToken(user.user_id, refreshToken, "refresh", expiryTime);
 
     return refreshToken;
   } catch (error) {
