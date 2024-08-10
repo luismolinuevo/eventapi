@@ -4,6 +4,7 @@ import {
   generateRefreshToken,
   verifyPassword,
 } from "../helpers/auth.js";
+import { AuthError, ProgrammingError } from "../utils/exceptions.js";
 
 async function loginService(email, password) {
   try {
@@ -12,7 +13,7 @@ async function loginService(email, password) {
     const compare_password = verifyPassword(user.password, password);
 
     if (!compare_password || !user) {
-      return;
+        return new AuthError("Invalid email or password");
     }
 
     const access_token = generateAccessToken(user);
@@ -20,7 +21,7 @@ async function loginService(email, password) {
 
     return { access_token, refresh_token };
   } catch (error) {
-    console.log("Ersdfsf", error);
+    throw new ProgrammingError("Error getting user by id");
   }
 }
 

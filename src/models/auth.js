@@ -1,4 +1,5 @@
 import prisma from "../config/prismaClient.js";
+import { DatabaseError } from "../utils/exceptions.js";
 
 async function signUp(email, password) {
   try {
@@ -11,7 +12,7 @@ async function signUp(email, password) {
 
     return true;
   } catch (error) {
-    console.log("Error with the signup service ", error);
+    throw new DatabaseError("Error creating user");
   }
 }
 
@@ -25,7 +26,7 @@ async function getUserByEmail(email) {
 
     return get_user;
   } catch (error) {
-    console.log("Error with the login model ", error);
+    throw new DatabaseError("Error getting user by email");
   }
 }
 
@@ -39,7 +40,7 @@ async function getUser(user_id) {
 
     return get_user;
   } catch (error) {
-    console.log("Error with getting user by id ", error);
+    throw new DatabaseError("Error getting user by id");
   }
 }
 
