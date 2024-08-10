@@ -44,4 +44,12 @@ async function getUser(user_id) {
   }
 }
 
-export { signUp, getUser, getUserByEmail };
+async function isTokenBlacklisted(token) {
+  const blacklistedToken = await prisma.blacklistedToken.findUnique({
+    where: { token },
+  });
+
+  return !!blacklistedToken;
+}
+
+export { signUp, getUser, getUserByEmail, isTokenBlacklisted };
