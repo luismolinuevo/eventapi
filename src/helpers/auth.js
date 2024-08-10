@@ -27,14 +27,14 @@ export const generateRefreshToken = async (user) => {
     { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
   );
 
-  await prisma.token.create({
-    data: {
-      userId: user.id,
-      token: refreshToken,
-      type: "refresh",
-      expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
-    },
-  });
+//   await prisma.token.create({
+//     data: {
+//       userId: user.id,
+//       token: refreshToken,
+//       type: "refresh",
+//       expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
+//     },
+//   });
 
   return refreshToken;
 };

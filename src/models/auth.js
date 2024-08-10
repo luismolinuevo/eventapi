@@ -30,7 +30,7 @@ async function getUserByEmail(email) {
   }
 }
 
-async function getUser(user_id) {
+async function getUserById(user_id) {
   try {
     const get_user = await prisma.user.findFirst({
       where: {
@@ -52,4 +52,4 @@ async function isTokenBlacklisted(token) {
   return !!blacklistedToken;
 }
 
-export { signUp, getUser, getUserByEmail, isTokenBlacklisted };
+export { signUp, getUserById, getUserByEmail, isTokenBlacklisted };

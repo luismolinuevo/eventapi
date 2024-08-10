@@ -15,18 +15,18 @@ async function loginService(email, password) {
   try {
     const user = await getUserByEmail(email);
 
-    const compare_password = verifyPassword(user.password, password);
+    const compare_password = await verifyPassword(user.password, password);
 
     if (!compare_password || !user) {
-      return new AuthError("Invalid email or password");
+      throw new AuthError("Invalid email or password");
     }
 
-    const access_token = generateAccessToken(user);
+    const access_token = await generateAccessToken(user);
     const refresh_token = await generateRefreshToken(user);
 
     return { access_token, refresh_token };
   } catch (error) {
-    throw new ProgrammingError("Error getting user by id");
+    throw new ProgrammingError("Error logging user in");
   }
 }
 
@@ -59,4 +59,4 @@ async function refreshTokens(refreshToken) {
   return { newAccessToken, newRefreshToken, refreshToken };
 }
 
-export { loginService };
+export { loginService, refreshTokens };

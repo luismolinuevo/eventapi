@@ -6,5 +6,6 @@ const router = Router();
 router.post("/signup", authControllers.signUpController);
 router.get("/user/:user_id", authControllers.getUserController);
 router.post("/login", authControllers.loginController);
+router.post("/refresh", authControllers.refreshTokenController);
 
 export default router;
