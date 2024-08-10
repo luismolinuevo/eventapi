@@ -1,6 +1,8 @@
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
 import prisma from "../config/prismaClient.js";
+import { AuthError } from "../utils/exceptions.js";
+import ms from "ms";
 
 // Hash user password
 export const hashPassword = async (password) => {
@@ -14,29 +16,35 @@ export const verifyPassword = async (hashedPassword, password) => {
 
 // Generate access token
 export const generateAccessToken = (user) => {
-  return jwt.sign({ id: user.id }, process.env.JWT_ACCESS_SECRET, {
+  return jwt.sign({ id: user.user_id }, process.env.JWT_ACCESS_SECRET, {
     expiresIn: process.env.JWT_ACCESS_EXPIRATION,
   });
 };
 
 // Generate refresh token
 export const generateRefreshToken = async (user) => {
-  const refreshToken = jwt.sign(
-    { id: user.id },
-    process.env.JWT_REFRESH_SECRET,
-    { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
-  );
+  try {
+    const refreshToken = jwt.sign(
+      { id: user.user_id },
+      process.env.JWT_REFRESH_SECRET,
+      { expiresIn: process.env.JWT_REFRESH_EXPIRATION }
+    );
 
-//   await prisma.token.create({
-//     data: {
-//       userId: user.id,
-//       token: refreshToken,
-//       type: "refresh",
-//       expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
-//     },
-//   });
+    await prisma.token.create({
+      data: {
+        user_id: user.user_id,
+        token: refreshToken,
+        type: "refresh",
+        expiry: new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)),
+      },
+      
+    });
 
-  return refreshToken;
+    return refreshToken;
+  } catch (error) {
+    console.log(error);
+    throw new AuthError("Error creating refresh token");
+  }
 };
 
 // Verify token and handle blacklist

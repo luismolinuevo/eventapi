@@ -4,3 +4,4 @@ rate limiting
 docker
 caching
 load balance
+fixed issue with blacklisted tokens

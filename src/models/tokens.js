@@ -1,16 +1,27 @@
 import prisma from "../config/prismaClient.js";
+import { DatabaseError } from "../utils/exceptions.js";
 
 async function isTokenBlacklisted(token, type = "refresh") {
-  const blacklistedToken = await prisma.token.findFirst({
-    where: { token, type },
-  });
-  return !!blacklistedToken;
+  try {
+    const blacklistedToken = await prisma.token.findFirst({
+      where: { token, type },
+    });
+    
+    if (blacklistedToken) {
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.log("Error checking if token is blacklisted:", error);
+    throw new DatabaseError("Failed to check if token is blacklisted");
+  }
 }
 
-async function saveToken(userId, token, type, expiration) {
+async function saveToken(user_id, token, type, expiration) {
   await prisma.token.create({
     data: {
-      userId,
+      user_id,
       token,
       type,
       expiry: new Date(Date.now() + expiration),

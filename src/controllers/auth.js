@@ -43,7 +43,7 @@ async function getUserController(req, res, next) {
     const get_user = await getUserById(user_id);
 
     if (!get_user) {
-      return next(new NotFoundError("Password or Email invalid"));
+      return next(new NotFoundError("User invalid"));
     }
 
     return res.status(200).json({
@@ -96,7 +96,7 @@ async function loginController(req, res, next) {
 
 async function refreshTokenController(req, res, next) {
   try {
-    console.log(req.cookie)
+    console.log(req.cookies)
     const { refreshToken } = req.cookies;
 
     if (!refreshToken) {
