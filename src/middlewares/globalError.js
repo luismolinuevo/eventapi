@@ -1,5 +1,5 @@
 function globalErrorHandler(err, req, res, next) {
-  console.error("Error: ", err);
+  console.log("Error: ", err);
 
   // Handle operational errors
   if (err.isOperational) {

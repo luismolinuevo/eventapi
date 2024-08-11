@@ -19,6 +19,7 @@ model User {
   email    String   @unique @db.VarChar(40)
   password String   @db.VarChar(100)
   events   Events[]
+  tokens   Token[]
 }
 
 model Events {
@@ -27,4 +28,29 @@ model Events {
   user     User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+// Define the Token model
+model Token {
+  id     Int      @id @default(autoincrement())
+  token  String   @unique
+  type   String // Can be 'access' or 'refresh'
+  expiry DateTime
+
+  user_id Int
+  user    User @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
+}
+
+// Define the BlacklistedToken model if using blacklisting
+model BlacklistedToken {
+  id        Int      @id @default(autoincrement())
+  token     String   @unique
+  type      String
+  createdAt DateTime @default(now())
+
+  // Optional: add relation if you want to track which user the blacklisted token belongs to
+  // userId   Int?
+  // user     User?   @relation(fields: [userId], references: [id])
 }
