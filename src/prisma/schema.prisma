@@ -21,6 +21,7 @@ model User {
   events             Events[]
   tokens             Token[]
   passwordResetToken PasswordResetToken[]
+  phone              String
 }
 
 model Events {
