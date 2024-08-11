@@ -1,5 +1,6 @@
 import { signUp } from "../models/auth.js";
 import { validateAuthData } from "../schemas/auth.js";
+import { invalidateToken } from "../models/tokens.js";
 import { loginService } from "../services/auth.js";
 import { refreshTokens, refreshAccessToken } from "../services/tokens.js";
 import { hashPassword } from "../helpers/auth.js";
@@ -133,4 +134,41 @@ async function refreshAccessTokenController(req, res, next) {
   }
 }
 
-export { signUpController, loginController, refreshTokensController, refreshAccessToken };
+async function logoutController(req, res, next) {
+  try {
+    const { refreshToken } = req.cookies;
+
+    if (!refreshToken) {
+      return next(new ValidationError("Refresh token is required"));
+    }
+
+    // Invalidate the refresh token
+    await invalidateToken(refreshToken, "refresh");
+
+    // Clear the cookies
+    res.clearCookie(ACCESS_TOKEN_NAME, {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+    });
+    res.clearCookie(REFRESH_TOKEN_NAME, {
+      httpOnly: true,
+      secure: true,
+      path: "/",
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error); // Pass errors to the global error handler
+  }
+}
+
+export {
+  signUpController,
+  loginController,
+  refreshTokensController,
+  refreshAccessTokenController,
+};
