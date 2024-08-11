@@ -103,7 +103,7 @@ async function refreshTokensController(req, res, next) {
       message: "Tokens refreshed successfully",
     });
   } catch (error) {
-    next(error); // Pass errors to the global error handler
+    next(error); 
   }
 }
 
@@ -130,7 +130,7 @@ async function refreshAccessTokenController(req, res, next) {
       message: "Access token refreshed successfully",
     });
   } catch (error) {
-    next(error); // Pass errors to the global error handler
+    next(error); 
   }
 }
 
@@ -162,7 +162,7 @@ async function logoutController(req, res, next) {
       message: "Logged out successfully",
     });
   } catch (error) {
-    next(error); // Pass errors to the global error handler
+    next(error); 
   }
 }
 

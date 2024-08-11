@@ -4,5 +4,4 @@ rate limiting
 docker
 caching
 load balance
-logout
 forget/reset password
