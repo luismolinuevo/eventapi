@@ -65,4 +65,26 @@ async function refreshTokens(refreshToken) {
   }
 }
 
-export { verifyRefreshToken, refreshTokens };
+async function refreshAccessToken(refreshToken) {
+  try {
+    // Verify and decode the refresh token
+    const decoded = await verifyRefreshToken(refreshToken);
+
+    // Find the user associated with the refresh token
+    const user = await checkUserToken(decoded.id);
+
+    if (!user) {
+      throw new AuthError("User not found");
+    }
+
+    // Generate a new access token
+    const newAccessToken = await generateAccessToken(user);
+
+    return { newAccessToken };
+  } catch (error) {
+    console.log(error);
+    throw new ProgrammingError("Error refreshing access token");
+  }
+}
+
+export { verifyRefreshToken, refreshTokens, refreshAccessToken };
