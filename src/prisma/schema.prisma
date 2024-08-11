@@ -15,11 +15,12 @@ datasource db {
 }
 
 model User {
-  user_id  Int      @id @unique @default(autoincrement())
-  email    String   @unique @db.VarChar(40)
-  password String   @db.VarChar(100)
-  events   Events[]
-  tokens   Token[]
+  user_id            Int                  @id @unique @default(autoincrement())
+  email              String               @unique @db.VarChar(40)
+  password           String               @db.VarChar(100)
+  events             Events[]
+  tokens             Token[]
+  passwordResetToken PasswordResetToken[]
 }
 
 model Events {
@@ -53,4 +54,17 @@ model BlacklistedToken {
   // Optional: add relation if you want to track which user the blacklisted token belongs to
   // userId   Int?
   // user     User?   @relation(fields: [userId], references: [id])
+}
+
+model PasswordResetToken {
+  id Int @id @default(autoincrement())
+
+  token      String   @unique
+  type       String
+  createdAt  DateTime @default(now())
+  expires_at DateTime
+  user_id    Int
+  user       User     @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+
+  @@index([user_id])
 }
