@@ -4,4 +4,6 @@ rate limiting
 docker
 caching
 load balance
-fixed issue with blacklisted tokens
+make function to refresh just access token
+logout
+forget/reset password
