@@ -29,4 +29,16 @@ async function getUserById(user_id) {
   }
 }
 
-export { getUserByEmail, getUserById };
+async function findUserByEmailOrPhone(emailOrPhone) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { OR: [{ email: emailOrPhone }, { phone: emailOrPhone }] },
+    });
+
+    return user;
+  } catch (error) {
+    throw new DatabaseError("Failed to find user");
+  }
+}
+
+export { getUserByEmail, getUserById, findUserByEmailOrPhone };

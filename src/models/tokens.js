@@ -84,16 +84,4 @@ async function createPasswordResetToken(user_id) {
   }
 }
 
-export const findUserByEmailOrPhone = async (emailOrPhone) => {
-  try {
-    const user = await prisma.user.findUnique({
-      where: { OR: [{ email: emailOrPhone }, { phone: emailOrPhone }] },
-    });
-
-    return user;
-  } catch (error) {
-    throw new DatabaseError("Failed to find user");
-  }
-};
-
-export { isTokenBlacklisted, saveToken, invalidateToken, checkUserToken };
+export { isTokenBlacklisted, saveToken, invalidateToken, checkUserToken, createPasswordResetToken };
