@@ -1,7 +1,10 @@
 import { signUp } from "../models/auth.js";
-import { validateAuthData } from "../schemas/auth.js";
+import {
+  validateAuthData,
+  validateForgetPasswordData,
+} from "../schemas/auth.js";
 import { invalidateToken } from "../models/tokens.js";
-import { loginService } from "../services/auth.js";
+import { loginService, handleForgotPassword } from "../services/auth.js";
 import { refreshTokens, refreshAccessToken } from "../services/tokens.js";
 import { hashPassword } from "../helpers/auth.js";
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
@@ -103,7 +106,7 @@ async function refreshTokensController(req, res, next) {
       message: "Tokens refreshed successfully",
     });
   } catch (error) {
-    next(error); 
+    next(error);
   }
 }
 
@@ -130,7 +133,7 @@ async function refreshAccessTokenController(req, res, next) {
       message: "Access token refreshed successfully",
     });
   } catch (error) {
-    next(error); 
+    next(error);
   }
 }
 
@@ -162,7 +165,29 @@ async function logoutController(req, res, next) {
       message: "Logged out successfully",
     });
   } catch (error) {
-    next(error); 
+    next(error);
+  }
+}
+
+async function forgotPasswordController(req, res, next) {
+  try {
+    const { emailOrPhone } = req.body;
+
+    const valid = validateForgetPasswordData(emailOrPhone);
+
+    if (!valid) {
+      return next(new ValidationError("Email or Phone number is required"));
+    }
+
+    // Handle the forgot password logic
+    await handleForgotPassword(emailOrPhone);
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset link/OTP has been sent to your email/phone",
+    });
+  } catch (error) {
+    next(new ProgrammingError("Failed to process forgot password request"));
   }
 }
 
@@ -171,4 +196,5 @@ export {
   loginController,
   refreshTokensController,
   refreshAccessTokenController,
+  forgotPasswordController,
 };
