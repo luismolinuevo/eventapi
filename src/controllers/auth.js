@@ -33,6 +33,7 @@ async function signUpController(req, res, next) {
       message: "Created user",
     });
   } catch (error) {
+    console.log(error)
     return next(new ProgrammingError());
   }
 }
@@ -210,6 +211,7 @@ async function resetPasswordController(req, res, next) {
       response,
     });
   } catch (error) {
+    console.log(error)
     next(new ProgrammingError("Failed to process reset password request"));
   }
 }

@@ -1,5 +1,5 @@
-import { transporter } from "../../config/email";
-import { EmailError } from "../../utils/exceptions";
+import { transporter } from "../../config/email.js";
+import { EmailError } from "../../utils/exceptions.js";
 
 async function sendResetPasswordEmail(email, token) {
   try {

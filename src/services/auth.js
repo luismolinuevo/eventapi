@@ -14,7 +14,6 @@ import {
   findPasswordResetToken,
   invalidatePasswordResetToken,
 } from "../models/tokens.js";
-import { updateUserPassword } from "../models/user.js";
 import { sendResetPasswordEmail } from "../helpers/emails/auth.js";
 
 async function loginService(email, password) {

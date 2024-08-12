@@ -1,10 +1,11 @@
 import nodemailer from "nodemailer";
+
 import {
   DEV_EMAIL_HOST,
   DEV_EMAIL_PORT,
   DEV_EMAIL_USER,
   DEV_EMAIL_PASS,
-} from "../secrets";
+} from "../secrets.js";
 
 const transporter = nodemailer.createTransport({
   host: DEV_EMAIL_HOST,
