@@ -5,7 +5,11 @@ import {
   verifyPassword,
 } from "../helpers/auth.js";
 import { AuthError, ProgrammingError } from "../utils/exceptions.js";
-import { createPasswordResetToken } from "../models/tokens.js";
+import {
+  createPasswordResetToken,
+  findPasswordResetToken,
+  invalidatePasswordResetToken,
+} from "../models/tokens.js";
 
 async function loginService(email, password) {
   try {
@@ -27,23 +31,44 @@ async function loginService(email, password) {
 }
 
 async function handleForgotPassword(emailOrPhone) {
-  // Find the user by email or phone
-  const user = await findUserByEmailOrPhone(emailOrPhone);
+  try {
+    // Find the user by email or phone
+    const user = await findUserByEmailOrPhone(emailOrPhone);
 
-  if (!user) {
-    throw new AuthError("User not found");
+    if (!user) {
+      throw new AuthError("User not found");
+    }
+
+    // Create a password reset token
+    const resetToken = await createPasswordResetToken(user.user_id);
+
+    // Send the reset token to the user via email or SMS
+    if (user.email === emailOrPhone) {
+      await sendResetEmail(user.email, resetToken);
+    }
+    //   else {
+    //     await sendResetSMS(user.phone, resetToken);
+    //   }
+  } catch (error) {
+    throw new ProgrammingError("Error handling forgot password");
   }
-
-  // Create a password reset token
-  const resetToken = await createPasswordResetToken(user.user_id);
-
-  // Send the reset token to the user via email or SMS
-  if (user.email === emailOrPhone) {
-    await sendResetEmail(user.email, resetToken);
-  } 
-//   else {
-//     await sendResetSMS(user.phone, resetToken);
-//   }
 }
 
-export { loginService, handleForgotPassword };
+async function resetPassword(token, newPassword) {
+  try {
+    const resetToken = await findPasswordResetToken(token);
+
+    if (!resetToken || resetToken.expires_at < new Date()) {
+      throw new AuthError("Invalid or expired reset token");
+    }
+
+    await updateUserPassword(resetToken.user_id, newPassword);
+    await invalidatePasswordResetToken(token);
+
+    return { message: "Password has been reset" };
+  } catch (error) {
+    throw new ProgrammingError("Error resetting password");
+  }
+}
+
+export { loginService, handleForgotPassword, resetPassword };
