@@ -83,4 +83,21 @@ async function resetPassword(token, new_password) {
   }
 }
 
-export { loginService, handleForgotPassword, resetPassword };
+async function changePassword(email, new_password) {
+  try {
+    const user = await findUserByEmailOrPhone(email);
+
+    if (user) {
+      throw new AuthError("Cannot find user with that email");
+    }
+
+    await updateUserPassword(user.user_id, new_password);
+
+    return { message: "Password has been reset" };
+  } catch (error) {
+    console.log(error);
+    throw new ProgrammingError("Error resetting password");
+  }
+}
+
+export { loginService, handleForgotPassword, resetPassword, changePassword };
