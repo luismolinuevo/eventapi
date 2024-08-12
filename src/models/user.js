@@ -51,8 +51,10 @@ async function updateUserPassword(user_id, new_password) {
     const user = await prisma.user.findUnique({
       where: {
         user_id: user_id,
-        password: hashed_password,
       },
+      data: {
+        password: hashed_password,
+      }
     });
 
     return user;
