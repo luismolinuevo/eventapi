@@ -32,6 +32,12 @@ class DatabaseError extends AppError {
   }
 }
 
+class EmailError extends AppError {
+  constructor(message) {
+    super(message || "Email Error", 422);
+  }
+}
+
 // Example of a Programming Error (not operational)
 class ProgrammingError extends Error {
   constructor(message) {
@@ -50,4 +56,5 @@ export {
   NotFoundError,
   DatabaseError,
   ProgrammingError,
+  EmailError,
 };

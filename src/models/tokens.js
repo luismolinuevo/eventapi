@@ -1,5 +1,6 @@
 import prisma from "../config/prismaClient.js";
 import { DatabaseError } from "../utils/exceptions.js";
+import crypto from "crypto";
 
 async function isTokenBlacklisted(token, type = "refresh") {
   try {
@@ -56,4 +57,62 @@ async function checkUserToken(user_id) {
   }
 }
 
-export { isTokenBlacklisted, saveToken, invalidateToken, checkUserToken };
+async function createPasswordResetToken(user_id) {
+  try {
+    // Generate a reset token and hash it
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    // Set token expiration time (e.g., 1 hour)
+    const expiresAt = new Date(Date.now() + 3600000); // 1 hour
+
+    // Store the token in the database
+    const new_token = await prisma.passwordResetToken.create({
+      data: {
+        user_id: user_id,
+        token: hashedToken,
+        expires_at: expiresAt,
+        type: "reset",
+      },
+    });
+
+    return resetToken;
+  } catch (error) {
+    console.log(error);
+    throw new DatabaseError("Failed to create password reset token");
+  }
+}
+
+async function findPasswordResetToken(token) {
+  try {
+    const found_token = await prisma.passwordResetToken.findFirst({
+      where: {
+        token: token,
+      },
+    });
+
+    return found_token;
+  } catch (error) {
+    console.log(error);
+    throw new DatabaseError("Failed to find reset token");
+  }
+}
+
+async function invalidatePasswordResetToken(token) {
+  return await prisma.passwordResetToken.deleteMany({
+    where: { token },
+  });
+}
+
+export {
+  isTokenBlacklisted,
+  saveToken,
+  invalidateToken,
+  checkUserToken,
+  createPasswordResetToken,
+  findPasswordResetToken,
+  invalidatePasswordResetToken,
+};

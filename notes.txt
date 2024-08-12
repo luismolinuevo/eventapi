@@ -4,6 +4,4 @@ rate limiting
 docker
 caching
 load balance
-make function to refresh just access token
-logout
 forget/reset password
