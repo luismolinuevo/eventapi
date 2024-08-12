@@ -31,5 +31,22 @@ const forgetPasswordSchema = {
   additionalProperties: false,
 };
 
+const resetPasswordSchema = {
+  type: "object",
+  properties: {
+    token: {
+      type: "string",
+      minLength: 1,
+    },
+    newPassword: {
+      type: "string",
+      minLength: 8,
+    },
+  },
+  required: ["token", "newPassword"],
+  additionalProperties: false,
+};
+
 export const validateAuthData = ajv.compile(authSchema);
 export const validateForgetPasswordData = ajv.compile(forgetPasswordSchema);
+export const validateResetPasswordSchema = ajv.compile(resetPasswordSchema);

@@ -2,6 +2,7 @@ import { signUp } from "../models/auth.js";
 import {
   validateAuthData,
   validateForgetPasswordData,
+  validateResetPasswordSchema,
 } from "../schemas/auth.js";
 import { invalidateToken } from "../models/tokens.js";
 import { loginService, handleForgotPassword } from "../services/auth.js";
@@ -191,10 +192,34 @@ async function forgotPasswordController(req, res, next) {
   }
 }
 
+async function resetPasswordController(req, res, next) {
+  try {
+    const { token, newPassword } = req.body;
+
+    const valid = validateResetPasswordSchema(req.body);
+
+    if (!valid) {
+      return next(new ValidationError("Email or Phone number is required"));
+    }
+
+    const response = await resetPassword(token, newPassword);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+      response,
+    });
+  } catch (error) {
+    next(new ProgrammingError("Failed to process reset password request"));
+  }
+}
+
 export {
   signUpController,
   loginController,
   refreshTokensController,
   refreshAccessTokenController,
+  logoutController,
   forgotPasswordController,
+  resetPasswordController
 };
