@@ -1,4 +1,8 @@
-import { getUserByEmail, findUserByEmailOrPhone } from "../models/user.js";
+import {
+  getUserByEmail,
+  findUserByEmailOrPhone,
+  updateUserPassword,
+} from "../models/user.js";
 import {
   generateAccessToken,
   generateRefreshToken,
@@ -10,6 +14,8 @@ import {
   findPasswordResetToken,
   invalidatePasswordResetToken,
 } from "../models/tokens.js";
+import { updateUserPassword } from "../models/user.js";
+import { sendResetPasswordEmail } from "../helpers/emails/auth.js";
 
 async function loginService(email, password) {
   try {
@@ -44,7 +50,7 @@ async function handleForgotPassword(emailOrPhone) {
 
     // Send the reset token to the user via email or SMS
     if (user.email === emailOrPhone) {
-      await sendResetEmail(user.email, resetToken);
+      await sendResetPasswordEmail(user.email, resetToken);
     }
     //   else {
     //     await sendResetSMS(user.phone, resetToken);

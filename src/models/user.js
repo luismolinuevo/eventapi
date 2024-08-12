@@ -1,5 +1,6 @@
 import prisma from "../config/prismaClient.js";
 import { DatabaseError } from "../utils/exceptions.js";
+import { hashPassword } from "../helpers/auth.js";
 
 async function getUserByEmail(email) {
   try {
@@ -41,4 +42,25 @@ async function findUserByEmailOrPhone(emailOrPhone) {
   }
 }
 
-export { getUserByEmail, getUserById, findUserByEmailOrPhone };
+async function updateUserPassword(user_id, new_password) {
+  const hashed_password = await hashPassword(new_password);
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        user_id: user_id,
+        password: hashed_password,
+      },
+    });
+
+    return user;
+  } catch (error) {
+    throw new DatabaseError("Failed to update user password");
+  }
+}
+
+export {
+  getUserByEmail,
+  getUserById,
+  findUserByEmailOrPhone,
+  updateUserPassword,
+};
