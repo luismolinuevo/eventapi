@@ -35,14 +35,15 @@ async function handleForgotPassword(emailOrPhone) {
   }
 
   // Create a password reset token
-  const resetToken = await createPasswordResetToken(user.id);
+  const resetToken = await createPasswordResetToken(user.user_id);
 
   // Send the reset token to the user via email or SMS
   if (user.email === emailOrPhone) {
     await sendResetEmail(user.email, resetToken);
-  } else {
-    await sendResetSMS(user.phone, resetToken);
-  }
+  } 
+//   else {
+//     await sendResetSMS(user.phone, resetToken);
+//   }
 }
 
 export { loginService, handleForgotPassword };

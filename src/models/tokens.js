@@ -84,4 +84,25 @@ async function createPasswordResetToken(user_id) {
   }
 }
 
-export { isTokenBlacklisted, saveToken, invalidateToken, checkUserToken, createPasswordResetToken };
+async function findPasswordResetToken(token) {
+  return prisma.passwordResetToken.findUnique({
+    where: { token },
+  });
+}
+
+async function invalidatePasswordResetToken(token) {
+  return prisma.passwordResetToken.update({
+    where: { token },
+    data: { token: null },
+  });
+}
+
+export {
+  isTokenBlacklisted,
+  saveToken,
+  invalidateToken,
+  checkUserToken,
+  createPasswordResetToken,
+  findPasswordResetToken,
+  invalidatePasswordResetToken
+};
