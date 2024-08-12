@@ -190,7 +190,7 @@ async function forgotPasswordController(req, res, next) {
       message: "Password reset link/OTP has been sent to your email/phone",
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(new ProgrammingError("Failed to process forgot password request"));
   }
 }
@@ -217,6 +217,29 @@ async function resetPasswordController(req, res, next) {
     next(new ProgrammingError("Failed to process reset password request"));
   }
 }
+
+// async function changePasswordController(req, res, next) {
+//   try {
+//     const { email, newPassword } = req.body;
+
+//     const valid = validateResetPasswordSchema(req.body);
+
+//     if (!valid) {
+//       return next(new ValidationError("Email or Phone number is required"));
+//     }
+
+//     const response = await resetPassword(token, newPassword);
+
+//     res.status(200).json({
+//       success: true,
+//       message: "Password reset successfully",
+//       response,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//     next(new ProgrammingError("Failed to process reset password request"));
+//   }
+// }
 
 export {
   signUpController,
