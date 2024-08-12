@@ -12,7 +12,7 @@ async function getUserByEmail(email) {
 
     return get_user;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw new DatabaseError("Error getting user by email");
   }
 }
@@ -33,14 +33,14 @@ async function getUserById(user_id) {
 
 async function findUserByEmailOrPhone(emailOrPhone) {
   try {
-    console.log(emailOrPhone)
+    console.log(emailOrPhone);
     const user = await prisma.user.findFirst({
       where: { OR: [{ email: emailOrPhone }, { phone: emailOrPhone }] },
     });
 
     return user;
   } catch (error) {
-    console.log(error)
+    console.log(error);
     throw new DatabaseError("Failed to find user");
   }
 }
@@ -48,17 +48,18 @@ async function findUserByEmailOrPhone(emailOrPhone) {
 async function updateUserPassword(user_id, new_password) {
   const hashed_password = await hashPassword(new_password);
   try {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.updateMany({
       where: {
         user_id: user_id,
       },
       data: {
         password: hashed_password,
-      }
+      },
     });
 
     return user;
   } catch (error) {
+    console.log(error);
     throw new DatabaseError("Failed to update user password");
   }
 }
