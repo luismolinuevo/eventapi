@@ -14,6 +14,7 @@ import {
   ValidationError,
   AuthError,
 } from "../utils/exceptions.js";
+import { resetPassword } from "../services/auth.js";
 
 async function signUpController(req, res, next) {
   try {
@@ -33,7 +34,7 @@ async function signUpController(req, res, next) {
       message: "Created user",
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return next(new ProgrammingError());
   }
 }
@@ -175,7 +176,7 @@ async function forgotPasswordController(req, res, next) {
   try {
     const { emailOrPhone } = req.body;
 
-    const valid = validateForgetPasswordData(emailOrPhone);
+    const valid = validateForgetPasswordData(req.body);
 
     if (!valid) {
       return next(new ValidationError("Email or Phone number is required"));
@@ -189,6 +190,7 @@ async function forgotPasswordController(req, res, next) {
       message: "Password reset link/OTP has been sent to your email/phone",
     });
   } catch (error) {
+    console.log(error)
     next(new ProgrammingError("Failed to process forgot password request"));
   }
 }
@@ -211,7 +213,7 @@ async function resetPasswordController(req, res, next) {
       response,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(new ProgrammingError("Failed to process reset password request"));
   }
 }
@@ -223,5 +225,5 @@ export {
   refreshAccessTokenController,
   logoutController,
   forgotPasswordController,
-  resetPasswordController
+  resetPasswordController,
 };

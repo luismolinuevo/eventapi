@@ -15,6 +15,7 @@ import {
   invalidatePasswordResetToken,
 } from "../models/tokens.js";
 import { sendResetPasswordEmail } from "../helpers/emails/auth.js";
+import crypto from "crypto";
 
 async function loginService(email, password) {
   try {
@@ -55,23 +56,29 @@ async function handleForgotPassword(emailOrPhone) {
     //     await sendResetSMS(user.phone, resetToken);
     //   }
   } catch (error) {
+    console.log(error);
     throw new ProgrammingError("Error handling forgot password");
   }
 }
 
-async function resetPassword(token, newPassword) {
+async function resetPassword(token, new_password) {
   try {
-    const resetToken = await findPasswordResetToken(token);
+    const hashed_provided_token = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+    const reset_token = await findPasswordResetToken(hashed_provided_token);
 
-    if (!resetToken || resetToken.expires_at < new Date()) {
+    if (!reset_token || reset_token.expires_at < new Date()) {
       throw new AuthError("Invalid or expired reset token");
     }
 
-    await updateUserPassword(resetToken.user_id, newPassword);
-    await invalidatePasswordResetToken(token);
+    await updateUserPassword(reset_token.user_id, new_password);
+    await invalidatePasswordResetToken(hashed_provided_token);
 
     return { message: "Password has been reset" };
   } catch (error) {
+    console.log(error);
     throw new ProgrammingError("Error resetting password");
   }
 }

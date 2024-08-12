@@ -70,30 +70,40 @@ async function createPasswordResetToken(user_id) {
     const expiresAt = new Date(Date.now() + 3600000); // 1 hour
 
     // Store the token in the database
-    await prisma.passwordResetToken.create({
+    const new_token = await prisma.passwordResetToken.create({
       data: {
         user_id: user_id,
         token: hashedToken,
         expires_at: expiresAt,
+        type: "reset",
       },
     });
 
     return resetToken;
   } catch (error) {
+    console.log(error);
     throw new DatabaseError("Failed to create password reset token");
   }
 }
 
 async function findPasswordResetToken(token) {
-  return prisma.passwordResetToken.findUnique({
-    where: { token },
-  });
+  try {
+    const found_token = await prisma.passwordResetToken.findFirst({
+      where: {
+        token: token,
+      },
+    });
+
+    return found_token;
+  } catch (error) {
+    console.log(error);
+    throw new DatabaseError("Failed to find reset token");
+  }
 }
 
 async function invalidatePasswordResetToken(token) {
-  return prisma.passwordResetToken.update({
+  return await prisma.passwordResetToken.deleteMany({
     where: { token },
-    data: { token: null },
   });
 }
 
@@ -104,5 +114,5 @@ export {
   checkUserToken,
   createPasswordResetToken,
   findPasswordResetToken,
-  invalidatePasswordResetToken
+  invalidatePasswordResetToken,
 };

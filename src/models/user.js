@@ -32,12 +32,14 @@ async function getUserById(user_id) {
 
 async function findUserByEmailOrPhone(emailOrPhone) {
   try {
-    const user = await prisma.user.findUnique({
+    console.log(emailOrPhone)
+    const user = await prisma.user.findFirst({
       where: { OR: [{ email: emailOrPhone }, { phone: emailOrPhone }] },
     });
 
     return user;
   } catch (error) {
+    console.log(error)
     throw new DatabaseError("Failed to find user");
   }
 }
