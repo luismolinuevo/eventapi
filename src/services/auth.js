@@ -85,9 +85,9 @@ async function resetPassword(token, new_password) {
 
 async function changePassword(email, new_password) {
   try {
-    const user = await findUserByEmailOrPhone(email);
+    const user = await getUserByEmail(email);
 
-    if (user) {
+    if (!user) {
       throw new AuthError("Cannot find user with that email");
     }
 

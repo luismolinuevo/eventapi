@@ -3,6 +3,6 @@ import * as userControllers from "../controllers/user.js";
 
 const router = Router();
 
-router.get("/:id", userControllers.getUserController);
+router.get("/:user_id", userControllers.getUserController);
 
 export default router;

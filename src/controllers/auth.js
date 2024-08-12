@@ -209,7 +209,7 @@ async function resetPasswordController(req, res, next) {
       return next(new ValidationError("Email or Phone number is required"));
     }
 
-    const response = await changePassword(token, newPassword);
+    const response = await resetPassword(token, newPassword);
 
     res.status(200).json({
       success: true,
@@ -224,15 +224,15 @@ async function resetPasswordController(req, res, next) {
 
 async function changePasswordController(req, res, next) {
   try {
-    const { email, newPassword } = req.body;
+    const { email, password } = req.body;
 
-    const valid = validateAuthSchema(req.body);
+    // const valid = validateAuthData(req.body);
 
-    if (!valid) {
-      return next(new ValidationError("Email or password missing"));
-    }
+    // if (!valid) {
+    //   return next(new ValidationError("Password or Email invalid"));
+    // }
 
-    const response = await resetPassword(email, newPassword);
+    const response = await changePassword(email, password);
 
     res.status(200).json({
       success: true,

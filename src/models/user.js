@@ -4,7 +4,7 @@ import { hashPassword } from "../helpers/auth.js";
 
 async function getUserByEmail(email) {
   try {
-    const get_user = await prisma.user.findFirst({
+    const get_user = await prisma.user.findUnique({
       where: {
         email: email,
       },
@@ -12,6 +12,7 @@ async function getUserByEmail(email) {
 
     return get_user;
   } catch (error) {
+    console.log(error)
     throw new DatabaseError("Error getting user by email");
   }
 }
