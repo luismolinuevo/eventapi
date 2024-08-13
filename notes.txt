@@ -1,7 +1,14 @@
 Still need:
-helmet
+
 rate limiting
+
 docker
+
 caching
+
 load balance
+
 forget/reset password
+
+Asynchronous Processing
+Background Jobs: Offload time-consuming tasks, such as sending emails or processing large datasets, to background job queues using libraries like Bull or Kue. This prevents blocking the main event loop.
