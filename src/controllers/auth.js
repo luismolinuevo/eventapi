@@ -5,7 +5,12 @@ import {
   validateResetPasswordSchema,
 } from "../schemas/auth.js";
 import { invalidateToken } from "../models/tokens.js";
-import { loginService, handleForgotPassword } from "../services/auth.js";
+import {
+  loginService,
+  handleForgotPassword,
+  changePassword,
+  resetPassword,
+} from "../services/auth.js";
 import { refreshTokens, refreshAccessToken } from "../services/tokens.js";
 import { hashPassword } from "../helpers/auth.js";
 import { ACCESS_TOKEN_NAME, REFRESH_TOKEN_NAME } from "../secrets.js";
@@ -14,7 +19,6 @@ import {
   ValidationError,
   AuthError,
 } from "../utils/exceptions.js";
-import { resetPassword } from "../services/auth.js";
 
 async function signUpController(req, res, next) {
   try {
@@ -190,7 +194,7 @@ async function forgotPasswordController(req, res, next) {
       message: "Password reset link/OTP has been sent to your email/phone",
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     next(new ProgrammingError("Failed to process forgot password request"));
   }
 }
@@ -218,6 +222,29 @@ async function resetPasswordController(req, res, next) {
   }
 }
 
+async function changePasswordController(req, res, next) {
+  try {
+    const { email, password } = req.body;
+
+    // const valid = validateAuthData(req.body);
+
+    // if (!valid) {
+    //   return next(new ValidationError("Password or Email invalid"));
+    // }
+
+    const response = await changePassword(email, password);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+      response,
+    });
+  } catch (error) {
+    console.log(error);
+    next(new ProgrammingError("Failed to process reset password request"));
+  }
+}
+
 export {
   signUpController,
   loginController,
@@ -226,4 +253,5 @@ export {
   logoutController,
   forgotPasswordController,
   resetPasswordController,
+  changePasswordController,
 };
