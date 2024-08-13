@@ -12,7 +12,7 @@ router.post("/forgot_password", authControllers.forgotPasswordController);
 router.post("/reset_password", authControllers.resetPasswordController);
 router.post(
   "/change_password",
-//   protect,
+  protect,
   authControllers.changePasswordController
 );
 
