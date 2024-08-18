@@ -8,3 +8,43 @@ load balance
 
 Asynchronous Processing
 Background Jobs: Offload time-consuming tasks, such as sending emails or processing large datasets, to background job queues using libraries like Bull or Kue. This prevents blocking the main event loop.
+
+A app that allows users to post the location of a stray. Last seen/Picture for proof. Track dogs. Post proof of feeding, adpotion, and etc. Needs a admin panel. It will be community based
+
+-User Profile
+
+Name(first and last)
+Profile Image
+Location(State, and City). Maybe specific address
+total donation
+feeding count
+adpotion count
+
+
+-Stray Profile
+
+last seen location
+Name
+discovered by
+last feeding
+Picture
+age
+weight
+bread
+
+-feedings
+
+user id
+stray id
+proof of feeding(picture)
+
+-adpotions
+
+user id
+stray id
+proof of adpotion
+
+
+
+
+
