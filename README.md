@@ -1,4 +1,4 @@
-# Events API
+# Save an stray
 
 Welcome to the Events API! This API is designed to manage event data efficiently and securely. Built using Express and Node.js, it incorporates advanced features and best practices to ensure scalability, security, and maintainability.
 
