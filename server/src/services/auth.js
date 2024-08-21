@@ -40,7 +40,7 @@ async function handleForgotPassword(emailOrPhone) {
   try {
     // Find the user by email or phone
     const user = await findUserByEmailOrPhone(emailOrPhone);
-
+    
     if (!user) {
       throw new AuthError("User not found");
     }

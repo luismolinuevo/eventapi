@@ -15,6 +15,7 @@ import {
 export const hashPassword = async (password) => {
   return await argon2.hash(password);
 };
+//may not need await here. may be sync
 
 // Verify hashed password
 export const verifyPassword = async (hashedPassword, password) => {
@@ -53,7 +54,9 @@ export const generateRefreshToken = async (user) => {
   try {
     const refreshToken = signToken(user, "refresh");
 
-    const expiryTime = new Date(Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION));
+    const expiryTime = new Date(
+      Date.now() + ms(process.env.JWT_REFRESH_EXPIRATION)
+    );
 
     await saveToken(user.user_id, refreshToken, "refresh", expiryTime);
 
