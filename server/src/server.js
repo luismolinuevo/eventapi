@@ -8,6 +8,7 @@ import apiRouter from "./routes/index.js";
 import globalErrorHandler from "./middlewares/globalError.js";
 
 //This is your server
+export default async function createServer() {
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -15,11 +16,10 @@ app.use(cookieParser());
 app.use(morgan("tiny"));
 app.use(helmet());
 app.use(cors());
-// app.use(limiter);
+app.use(limiter);
 
 app.use("/api", apiRouter);
 app.use(globalErrorHandler);
 
-app.listen(3001, () => {
-  console.log("Connected to server on port 3001");
-});
+return app;
+}
