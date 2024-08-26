@@ -1,4 +1,4 @@
-import prisma from "../config/prismaClient.js";
+import prisma from "../../config/prismaClient.js"
 import { DatabaseError } from "../utils/exceptions.js";
 import crypto from "crypto";
 

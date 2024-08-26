@@ -1,6 +1,5 @@
 import jwt from "jsonwebtoken";
 import argon2 from "argon2";
-import prisma from "../config/prismaClient.js";
 import { AuthError, ProgrammingError } from "../utils/exceptions.js";
 import ms from "ms";
 import { saveToken } from "../models/tokens.js";

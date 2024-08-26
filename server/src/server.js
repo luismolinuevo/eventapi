@@ -3,7 +3,7 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
 import cors from "cors";
-import limiter from "./config/rateLimiter.js";
+import limiter from "../config/rateLimiter.js"
 import apiRouter from "./routes/index.js";
 import globalErrorHandler from "./middlewares/globalError.js";
 

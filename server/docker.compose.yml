@@ -1,18 +1,16 @@
-# Use root/example as user/password credentials
 version: '3.1'
 
 services:
 
   db:
-    image: mysql
-    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
-    # (this is just an example, not intended to be a production configuration)
-    command: --default-authentication-plugin=mysql_native_password
+    image: postgres:latest
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: mydatabase  # Optional: specify a default database
     ports: 
-      - 3300:3306
+      - 5432:5432
 
   adminer:
     image: adminer
@@ -20,5 +18,5 @@ services:
     ports:
       - 8080:8080
 
-#username: root
-#pass: example
+# username: root
+# pass: example

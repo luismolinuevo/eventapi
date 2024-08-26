@@ -6,7 +6,6 @@ import {
   checkUserToken,
 } from "../models/tokens.js";
 import jwt from "jsonwebtoken";
-import prisma from "../config/prismaClient.js";
 import { AuthError, ProgrammingError } from "../utils/exceptions.js";
 import { generateAccessToken, generateRefreshToken } from "../helpers/auth.js";
 
