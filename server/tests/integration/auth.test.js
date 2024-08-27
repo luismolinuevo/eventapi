@@ -1,19 +1,18 @@
 import request from "supertest";
 import createServer from "../../src/server.js";
 import { closeServer } from "../../src/testServer.js";
+import { loginService } from "../../src/services/auth.js";
 
 // Mocking the dependencies
 jest.mock("../../src/services/auth.js", () => ({
   loginService: jest.fn(),
 }));
 
-import { loginService } from "../../src/services/auth.js";
-
 describe("Auth Controller", () => {
   let app;
 
   beforeAll(async () => {
-    app = await createServer();
+    app = await createServer(); //maybe create user with prisma to and the delete that user when done
   });
 
   afterAll(async () => {
