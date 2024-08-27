@@ -2,7 +2,7 @@
 FROM node:18
 
 # Set the working directory.
-WORKDIR /app
+WORKDIR /
 
 # Install dependencies.
 COPY package*.json ./
@@ -12,7 +12,9 @@ RUN npm install
 COPY . .
 
 # Expose the port the app runs on.
-EXPOSE 3000
+EXPOSE 3001
+
+RUN npx prisma generate
 
 # Define the command to run the app.
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

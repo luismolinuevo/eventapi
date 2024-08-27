@@ -17,6 +17,18 @@ services:
     restart: always
     ports:
       - 8080:8080
+    
+  app:
+    build: 
+      context: .  # Use the current directory as the build context
+      dockerfile: Dockerfile  # Use the Dockerfile in the current directory
+    restart: always
+    ports:
+      - 3000:3001  # Map the container's port 3000 to the host's port 3000
+    depends_on:
+      - db  # Ensure that the db service is started before the app
+    environment:
+      DATABASE_URL: ${DATABASE_URL} 
 
 # username: root
 # pass: example
