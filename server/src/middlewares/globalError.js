@@ -19,7 +19,7 @@ function globalErrorHandler(err, req, res, next) {
 
   // Terminate the process for programming errors in production
   if (!err.isOperational) {
-    process.exit(1);
+    // process.exit(1);
   }
 }
 
