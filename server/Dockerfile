@@ -1,20 +1,20 @@
-# Use the official Node.js image.
 FROM node:18
 
-# Set the working directory.
-WORKDIR /
+# Set the working directory
+WORKDIR /usr/src/app
 
-# Install dependencies.
+# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application code.
+# Copy the rest of the application code
 COPY . .
 
-# Expose the port the app runs on.
-EXPOSE 3001
-
+# Generate Prisma client
 RUN npx prisma generate
 
-# Define the command to run the app.
+# Expose the port the app runs on
+EXPOSE 3001
+
+# Define the command to run the app
 CMD ["npm", "start"]

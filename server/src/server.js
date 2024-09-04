@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(morgan("tiny"));
 app.use(helmet());
 app.use(cors());
-app.use(limiter);
+// app.use(limiter);
 
 app.use("/api", apiRouter);
 app.use(globalErrorHandler);
