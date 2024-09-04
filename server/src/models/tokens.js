@@ -1,4 +1,4 @@
-import prisma from "../../config/prismaClient.js"
+import prisma from "../../config/prismaClient.js";
 import { DatabaseError } from "../utils/exceptions.js";
 import crypto from "crypto";
 
@@ -21,6 +21,14 @@ async function isTokenBlacklisted(token, type = "refresh") {
 
 async function saveToken(user_id, token, type, expiration) {
   try {
+    const existingToken = await prisma.token.findUnique({
+      where: { token },
+    });
+
+    if(existingToken) {
+      return existingToken; //maybe create new one or something in future
+    }
+    
     await prisma.token.create({
       data: {
         user_id,
@@ -54,6 +62,18 @@ async function checkUserToken(user_id) {
     return user;
   } catch (error) {
     throw new DatabaseError("Failed to find user with that token");
+  }
+}
+
+async function findToken(token) {
+  try {
+    const existingToken = await prisma.token.findUnique({
+      where: { token },
+    });
+
+    return existingToken;
+  } catch (error) {
+    throw new DatabaseError("Failed to find user with that token: " + error);
   }
 }
 
@@ -115,4 +135,5 @@ export {
   createPasswordResetToken,
   findPasswordResetToken,
   invalidatePasswordResetToken,
+  findToken
 };
