@@ -21,21 +21,24 @@ async function isTokenBlacklisted(token, type = "refresh") {
 
 async function saveToken(user_id, token, type, expiration) {
   try {
-    const existingToken = await prisma.token.findUnique({
-      where: { token },
-    });
+    await prisma.$transaction(async (prisma) => {
+      const existingToken = await prisma.token.findUnique({
+        where: { token },
+      });
 
-    if(existingToken) {
-      return existingToken; //maybe create new one or something in future
-    }
-    
-    await prisma.token.create({
-      data: {
-        user_id,
-        token,
-        type,
-        expiry: expiration,
-      },
+      if (existingToken) {
+        // return existingToken; //maybe create new one or something in future
+        return null;
+      }
+
+      await prisma.token.create({
+        data: {
+          user_id,
+          token,
+          type,
+          expiry: expiration,
+        },
+      });
     });
   } catch (error) {
     throw new DatabaseError("Failed to save token");
@@ -135,5 +138,5 @@ export {
   createPasswordResetToken,
   findPasswordResetToken,
   invalidatePasswordResetToken,
-  findToken
+  findToken,
 };
