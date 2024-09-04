@@ -12,7 +12,20 @@ export let options = {
 };
 
 export default function () {
-  let res = http.get("http://localhost:3001/api/user/1");
+  // let res = http.get("http://localhost:3001/api/user/1");
+  const url = "http://localhost:3001/api/auth/login";
+  const payload = JSON.stringify({
+    email: "test1@gmail.com",
+    password: "test1111"
+  });
+
+  const params = {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  };
+
+  let res = http.post(url, payload, params);
 
   check(res, {
     "status is 200": (r) => r.status === 200,
